@@ -6,66 +6,67 @@ local Vertex = require(script.Parent.Objects.Vertex)
 local Edge = require(script.Parent.Objects.Edge)
 
 local function removeSmallestEdgeConnectedToT(T, Edges)
-    local foundE = nil
-    local notNeededEs = {}
+	local foundE = nil
+	local notNeededEs = {}
 
-    for i, e in Edges do --traverse all edges (sorted a<b)
-        local EVerticies = e:GetVerticies()
-        local foundVerticies = 0
+	for i, e in Edges do --traverse all edges (sorted a<b)
+		local EVerticies = e:GetVerticies()
+		local foundVerticies = 0
 
-        for _, TVertex in T do --check for possible connections
-            if table.find(EVerticies, TVertex) then
-                foundVerticies += 1
-            end
-        end
+		for _, TVertex in T do --check for possible connections
+			if table.find(EVerticies, TVertex) then
+				foundVerticies += 1
+			end
+		end
 
-        if foundVerticies == 1 then --if connection found, break the loop
-            foundE = e
-            
-            break
-        elseif foundVerticies == 2 then --if conection not needed anymore, schedule to be removed
-            table.insert(notNeededEs, e)
-        end
-    end
+		if foundVerticies == 1 then --if connection found, break the loop
+			foundE = e
 
-    assert(foundE, "No matching edge found! This function should not have been ran") --s
+			break
+		elseif foundVerticies == 2 then --if conection not needed anymore, schedule to be removed
+			table.insert(notNeededEs, e)
+		end
+	end
 
-    for _, notNeededE in notNeededEs do --remove all edges that are not needed anymore
-        table.remove(Edges, table.find(Edges, notNeededE))
-        notNeededE:Destroy()
-    end
+	assert(foundE, "No matching edge found! This function should not have been ran") --s
 
-    return table.remove(Edges, table.find(Edges, foundE))
+	for _, notNeededE in notNeededEs do --remove all edges that are not needed anymore
+		table.remove(Edges, table.find(Edges, notNeededE))
+		notNeededE:Destroy()
+	end
+
+	return table.remove(Edges, table.find(Edges, foundE))
 end
 
 function ShortestPath.CalculateMST(Verticies, Edges)
-    table.sort(Edges,function(a,b) --sort edges
-	    return a.Length<b.Length
-    end)
+	table.sort(Edges, function(a, b) --sort edges
+		return a.Length < b.Length
+	end)
 
-    local T = {Verticies = {Verticies[1]}, Edges = {}} ; table.remove(Verticies, 1) --create new Graph T with startVertex
+	local T = { Verticies = { Verticies[1] }, Edges = {} }
+	table.remove(Verticies, 1) --create new Graph T with startVertex
 
-    while #Verticies > 0 do
-        local e = removeSmallestEdgeConnectedToT(T.Verticies, Edges)
-        table.insert(T.Edges, e)
+	while #Verticies > 0 do
+		local e = removeSmallestEdgeConnectedToT(T.Verticies, Edges)
+		table.insert(T.Edges, e)
 
-        for _, newVertex in e:GetVerticies() do --put the new vertex in the graph T
-            if not table.find(T.Verticies, newVertex) then
-                table.insert(T.Verticies, newVertex)
-                table.remove(Verticies, table.find(Verticies, newVertex))
-            end
-        end
-    end
+		for _, newVertex in e:GetVerticies() do --put the new vertex in the graph T
+			if not table.find(T.Verticies, newVertex) then
+				table.insert(T.Verticies, newVertex)
+				table.remove(Verticies, table.find(Verticies, newVertex))
+			end
+		end
+	end
 
-    for _, e in Edges do
-        e:Destroy()
-    end
+	for _, e in Edges do
+		e:Destroy()
+	end
 
-    return T
+	return T
 end
 
 function ShortestPath.CalculateTSPG(oldGraph)
-	local Verticies = oldGraph.Verticies 
+	local Verticies = oldGraph.Verticies
 	local MSTEdges = oldGraph.Edges
 
 	local function findOddDegreeVertices(vertices)
@@ -120,18 +121,24 @@ function ShortestPath.CalculateTSPG(oldGraph)
 
 	local function combineEdges(mstEdges, matching)
 		local allEdges = {}
-		for _, e in ipairs(mstEdges) do table.insert(allEdges, e) end
-		for _, e in ipairs(matching) do table.insert(allEdges, e) end
+		for _, e in ipairs(mstEdges) do
+			table.insert(allEdges, e)
+		end
+		for _, e in ipairs(matching) do
+			table.insert(allEdges, e)
+		end
 		return allEdges
 	end
 
 	local function findEulerianTour(vertices, allEdges)
 		local graph = {}
-		for _, v in ipairs(vertices) do graph[v] = {} end
+		for _, v in ipairs(vertices) do
+			graph[v] = {}
+		end
 		for _, e in ipairs(allEdges) do
 			local v1, v2 = table.unpack(e:GetVerticies())
-			table.insert(graph[v1], {v = v2, edge = e})
-			table.insert(graph[v2], {v = v1, edge = e})
+			table.insert(graph[v1], { v = v2, edge = e })
+			table.insert(graph[v2], { v = v1, edge = e })
 		end
 
 		local tour = {}
@@ -173,9 +180,9 @@ function ShortestPath.CalculateTSPG(oldGraph)
 		local newEdges = {}
 		for i = 1, #path - 1 do
 			local v1 = path[i]
-            v1:SetId(i)
+			v1:SetId(i)
 			local v2 = path[i + 1]
-            v2:SetId(i+1)
+			v2:SetId(i + 1)
 			local edge = Edge.new(v1, v2)
 			table.insert(newEdges, edge)
 			v1:AddEdge(edge)
@@ -198,17 +205,47 @@ function ShortestPath.CalculateTSPG(oldGraph)
 end
 
 function ShortestPath.CalculateWalkway(Vertices, Edges)
-    local MST = ShortestPath.CalculateMST(Vertices, Edges)
-    local FinalPath = ShortestPath.CalculateTSPG(MST)
+	local MST = ShortestPath.CalculateMST(Vertices, Edges)
+	local FinalPath = ShortestPath.CalculateTSPG(MST)
 
-    for _, Edge in MST.Edges do
-        Edge:Destroy()
-    end
+	for _, e in MST.Edges do
+		e:Destroy()
+	end
 
-    local Edges = FinalPath.Edges
-    local Verticies = FinalPath.Vertices
+	local Edges = FinalPath.Edges
+	local Verticies = FinalPath.Vertices
 
-    return Edges, Verticies --Vertex IDs are ordered
+	return { Edges = Edges, Verticies = Verticies } --Vertex IDs are ordered
+end
+
+function ShortestPath.GetWalkPositionsArrayFromStartPosition(Graph, StartPosition: Vector3): { Vector3 }
+	local nearestVertex = nil --find nearest vertex
+	local nearestMagnitude = math.huge
+	for _, v in Graph.Verticies do
+		local pos = v:GetPosition()
+		local magnitude = (pos - StartPosition).Magnitude
+
+		if magnitude < nearestMagnitude then
+			nearestMagnitude = magnitude
+			nearestVertex = v
+		end
+	end
+
+	assert(nearestVertex, "No nearest vertex found. Graph might be empty?")
+
+	local nearestID = nearestVertex:GetId()
+	local PositionArray = {}
+
+	for i = nearestID, #Graph.Verticies, 1 do
+		table.insert(PositionArray, Graph.Verticies[i]:GetPosition())
+	end
+	if nearestID > 1 then
+		for i = 1, nearestID-1, 1 do
+			table.insert(PositionArray, Graph.Verticies[i]:GetPosition())
+		end
+	end
+
+    return PositionArray
 end
 
 return ShortestPath
