@@ -9,7 +9,7 @@ function ShortestPath:CalculateMST(Verticies, Edges)
     
 end
 
-function CreateTestGraph(Reference : {Part})
+function ShortestPath:CreateTestGraph(Reference : {Part})
     local Verticies = {}
     local Edges = {}
 
