@@ -44,7 +44,7 @@ function ShortestPath.CalculateMST(Verticies, Edges)
 		return a.Length < b.Length
 	end)
 
-	local T = Graph.new({Verticies[1]}, {})
+	local T = Graph.new({ Verticies[1] }, {})
 	table.remove(Verticies, 1) --create new Graph T with startVertex
 
 	while #Verticies > 0 do
@@ -179,17 +179,16 @@ function ShortestPath.CalculateTSPG(oldGraph)
 
 	local function createFinalGraph(path)
 		local newEdges = {}
-		for i = 1, #path - 1 do
-			local v1 = path[i]
-			v1:SetId(i)
-			local v2 = path[i + 1]
-			v2:SetId(i + 1)
-			local edge = Edge.new(v1, v2)
-			table.insert(newEdges, edge)
-			v1:AddEdge(edge)
-			v2:AddEdge(edge)
+		for i = 1, #path -1 do
+            local v1 = path[i]
+            v1:SetId(i)
+            local v2 = path[i + 1]
+            local edge = Edge.new(v1, v2)
+            table.insert(newEdges, edge)
+            v1:AddEdge(edge) 
+            v2:AddEdge(edge)
 		end
-       -- warn(path)
+
 		return Graph.new(path, newEdges)
 	end
 
@@ -200,29 +199,30 @@ function ShortestPath.CalculateTSPG(oldGraph)
 	local hamiltonianPath = makeHamiltonianTour(eulerTour)
 	local finalGraph = createFinalGraph(hamiltonianPath)
 
-    warn(finalGraph.Verticies)
+	warn(finalGraph.Verticies)
 	return finalGraph
 end
 
 function ShortestPath.CalculateWalkway(Vertices, Edges)
 	local MST = ShortestPath.CalculateMST(Vertices, Edges)
 	local FinalPath = ShortestPath.CalculateTSPG(MST)
+	-- warn(FinalPath)
 
 	for _, e in MST.Edges do
 		e:Destroy()
 	end
 
 	local Edges = FinalPath.Edges
-	local Verticies = FinalPath.Vertices
-    print(Verticies)
+	local Verticies = FinalPath.Verticies
+	-- print(Verticies)
 
-    return Graph.new(Verticies, Edges)--Vertex IDs are ordered
+	return Graph.new(Verticies, Edges) --Vertex IDs are ordered
 end
 
-function ShortestPath.GetWalkPositionsArrayFromStartPosition(Graph, StartPosition: Vector3): { Vector3 }
+function ShortestPath.GetWalkPositionsArrayFromStartPosition(G, StartPosition: Vector3): { Vector3 }
 	local nearestVertex = nil --find nearest vertex
 	local nearestMagnitude = math.huge
-	for _, v in Graph.Verticies do
+	for _, v in G.Verticies do
 		local pos = v:GetPosition()
 		local magnitude = (pos - StartPosition).Magnitude
 
@@ -237,16 +237,16 @@ function ShortestPath.GetWalkPositionsArrayFromStartPosition(Graph, StartPositio
 	local nearestID = nearestVertex:GetId()
 	local PositionArray = {}
 
-	for i = nearestID, #Graph.Verticies, 1 do
-		table.insert(PositionArray, Graph.Verticies[i]:GetPosition())
+	for i = nearestID, #G.Verticies-1, 1 do
+		table.insert(PositionArray, G.Verticies[i]:GetPosition())
 	end
 	if nearestID > 1 then
-		for i = 1, nearestID-1, 1 do
-			table.insert(PositionArray, Graph.Verticies[i]:GetPosition())
+		for i = 1, nearestID - 1, 1 do
+			table.insert(PositionArray, G.Verticies[i]:GetPosition())
 		end
 	end
 
-    return PositionArray
+	return PositionArray
 end
 
 return ShortestPath
