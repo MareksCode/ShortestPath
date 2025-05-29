@@ -21,7 +21,6 @@ local function removeSmallestEdgeConnectedToT(T, Edges)
 
         if foundVerticies == 1 then --if connection found, break the loop
             foundE = e
-            print("index: "..i)
             
             break
         elseif foundVerticies == 2 then --if conection not needed anymore, schedule to be removed
@@ -32,7 +31,6 @@ local function removeSmallestEdgeConnectedToT(T, Edges)
     assert(foundE, "No matching edge found! This function should not have been ran") --s
 
     for _, notNeededE in notNeededEs do --remove all edges that are not needed anymore
-        print("removed old")
         table.remove(Edges, table.find(Edges, notNeededE))
         notNeededE:Destroy()
     end
@@ -53,7 +51,6 @@ function ShortestPath.CalculateMST(Verticies, Edges)
 
         for _, newVertex in e:GetVerticies() do --put the new vertex in the graph T
             if not table.find(T.Verticies, newVertex) then
-                print("inserted new")
                 table.insert(T.Verticies, newVertex)
                 table.remove(Verticies, table.find(Verticies, newVertex))
             end
@@ -63,6 +60,139 @@ function ShortestPath.CalculateMST(Verticies, Edges)
     for _, e in Edges do
         e:Destroy()
     end
+
+    return T
+end
+
+function ShortestPath.CalculateTSPG(oldGraph)
+	local Verticies = oldGraph.Verticies 
+	local MSTEdges = oldGraph.Edges
+
+	local function findOddDegreeVertices(vertices)
+		local degree = {}
+		for _, v in ipairs(vertices) do
+			degree[v] = 0
+		end
+		for _, edge in ipairs(MSTEdges) do
+			local v1, v2 = table.unpack(edge:GetVerticies())
+			degree[v1] += 1
+			degree[v2] += 1
+		end
+
+		local odds = {}
+		for v, d in pairs(degree) do
+			if d % 2 == 1 then
+				table.insert(odds, v)
+			end
+		end
+		return odds
+	end
+
+	local function greedyMatching(oddVertices)
+		local used = {}
+		local matching = {}
+
+		while #oddVertices > 1 do
+			local u = table.remove(oddVertices)
+			if not used[u] then
+				local bestV, bestDist, bestIndex = nil, math.huge, nil
+				for i, v in ipairs(oddVertices) do
+					if not used[v] then
+						local dist = (u:GetPosition() - v:GetPosition()).Magnitude
+						if dist < bestDist then
+							bestV, bestDist, bestIndex = v, dist, i
+						end
+					end
+				end
+				if bestV then
+					table.remove(oddVertices, bestIndex)
+					local edge = Edge.new(u, bestV)
+					table.insert(matching, edge)
+					u:AddEdge(edge)
+					bestV:AddEdge(edge)
+					used[u], used[bestV] = true, true
+				end
+			end
+		end
+
+		return matching
+	end
+
+	local function combineEdges(mstEdges, matching)
+		local allEdges = {}
+		for _, e in ipairs(mstEdges) do table.insert(allEdges, e) end
+		for _, e in ipairs(matching) do table.insert(allEdges, e) end
+		return allEdges
+	end
+
+	local function findEulerianTour(vertices, allEdges)
+		local graph = {}
+		for _, v in ipairs(vertices) do graph[v] = {} end
+		for _, e in ipairs(allEdges) do
+			local v1, v2 = table.unpack(e:GetVerticies())
+			table.insert(graph[v1], {v = v2, edge = e})
+			table.insert(graph[v2], {v = v1, edge = e})
+		end
+
+		local tour = {}
+		local function visit(v)
+			while #graph[v] > 0 do
+				local next = table.remove(graph[v])
+				local u = next.v
+				-- Remove reverse edge
+				for i, entry in ipairs(graph[u]) do
+					if entry.v == v then
+						table.remove(graph[u], i)
+						break
+					end
+				end
+				visit(u)
+			end
+			table.insert(tour, v)
+		end
+
+		visit(vertices[1])
+		return tour
+	end
+
+	local function makeHamiltonianTour(tour)
+		local visited = {}
+		local path = {}
+		for i = #tour, 1, -1 do
+			local v = tour[i]
+			if not visited[v] then
+				table.insert(path, v)
+				visited[v] = true
+			end
+		end
+		table.insert(path, path[1]) -- close cycle
+		return path
+	end
+
+	local function createFinalGraph(path)
+		local newEdges = {}
+		for i = 1, #path - 1 do
+			local v1 = path[i]
+			local v2 = path[i + 1]
+			local edge = Edge.new(v1, v2)
+			table.insert(newEdges, edge)
+			v1:AddEdge(edge)
+			v2:AddEdge(edge)
+		end
+		return {
+			Vertices = path,
+			Edges = newEdges,
+		}
+	end
+
+	local oddVertices = findOddDegreeVertices(Verticies)
+	local matchingEdges = greedyMatching(oddVertices)
+	local allEdges = combineEdges(MSTEdges, matchingEdges)
+	local eulerTour = findEulerianTour(Verticies, allEdges)
+	local hamiltonianPath = makeHamiltonianTour(eulerTour)
+	local finalGraph = createFinalGraph(hamiltonianPath)
+
+	return finalGraph
 end
 
 return ShortestPath
