@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Vertex = {}
+Vertex.__index = Vertex
 local VISUALIZE = true
 
 local Trove = require(ReplicatedStorage.Packages.Trove)

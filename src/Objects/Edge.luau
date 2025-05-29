@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Edge = {}
+Edge.__index = Edge
 local VISUALIZE = true
 local Trove = require(ReplicatedStorage.Packages.Trove)
 
@@ -14,10 +15,10 @@ function Edge.new(Vertex1, Vertex2)
     if VISUALIZE then
         self.Trove = Trove.new()
 
-        self.VisualTrail = Trove:Construct(Instance, "Trail")
-        self.VisualAttach1 = Trove:Construct(Instance, "Attachment")
-        self.VisualAttach2 = Trove:Construct(Instance, "Attachment")
-        self.VisualPart = Trove:Construct(Instance, "Part")
+        self.VisualTrail = self.Trove:Construct(Instance, "Beam")
+        self.VisualAttach1 = self.Trove:Construct(Instance, "Attachment")
+        self.VisualAttach2 = self.Trove:Construct(Instance, "Attachment")
+        self.VisualPart = self.Trove:Construct(Instance, "Part")
 
         self.VisualPart.Transparency = 1
         self.VisualPart.Anchored = true
