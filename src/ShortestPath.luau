@@ -45,7 +45,7 @@ function ShortestPath.CalculateMST(Verticies, Edges)
 	    return a.Length<b.Length
     end)
 
-    local T = {Verticies = {Verticies[1]}, Edges = {}} ; table.remove(Verticies, 1) --create new Graph T with startVerticy
+    local T = {Verticies = {Verticies[1]}, Edges = {}} ; table.remove(Verticies, 1) --create new Graph T with startVertex
 
     while #Verticies > 0 do
         local e = removeSmallestEdgeConnectedToT(T.Verticies, Edges)
