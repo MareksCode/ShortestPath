@@ -7,6 +7,8 @@ local Trove = require(ReplicatedStorage.Packages.Trove)
 function Edge.new(Vertex1, Vertex2)
     local self = setmetatable({}, Edge)
 
+    self.id = -1
+
     self.Verticies = {Vertex1, Vertex2}
 
     Vertex1:AddEdge(self)
@@ -48,6 +50,13 @@ function Edge.new(Vertex1, Vertex2)
     end
 
     return self
+end
+
+function Edge:SetId(id)
+    self.id = id
+end
+function Edge:GetId()
+    return self.id
 end
 
 function Edge:GetVerticies()

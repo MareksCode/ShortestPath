@@ -173,7 +173,9 @@ function ShortestPath.CalculateTSPG(oldGraph)
 		local newEdges = {}
 		for i = 1, #path - 1 do
 			local v1 = path[i]
+            v1:SetId(i)
 			local v2 = path[i + 1]
+            v2:SetId(i+1)
 			local edge = Edge.new(v1, v2)
 			table.insert(newEdges, edge)
 			v1:AddEdge(edge)
@@ -193,6 +195,18 @@ function ShortestPath.CalculateTSPG(oldGraph)
 	local finalGraph = createFinalGraph(hamiltonianPath)
 
 	return finalGraph
+end
+
+function ShortestPath.CalculateWalkway(Vertices, Edges)
+    local MST = ShortestPath.CalculateMST(Vertices, Edges)
+    local FinalPath = ShortestPath.CalculateTSPG(MST)
+
+    for _, Edge in MST.Edges do
+        Edge:Destroy()
+    end
+
+    local Edges = FinalPath.Edges
+    local Verticies = FinalPath.Vertices
 end
 
 return ShortestPath
