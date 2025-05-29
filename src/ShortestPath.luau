@@ -4,6 +4,7 @@
 local ShortestPath = {}
 local Vertex = require(script.Parent.Objects.Vertex)
 local Edge = require(script.Parent.Objects.Edge)
+local Graph = require(script.Parent.Objects.Graph)
 
 local function removeSmallestEdgeConnectedToT(T, Edges)
 	local foundE = nil
@@ -43,7 +44,7 @@ function ShortestPath.CalculateMST(Verticies, Edges)
 		return a.Length < b.Length
 	end)
 
-	local T = { Verticies = { Verticies[1] }, Edges = {} }
+	local T = Graph.new({Verticies[1]}, {})
 	table.remove(Verticies, 1) --create new Graph T with startVertex
 
 	while #Verticies > 0 do
@@ -188,10 +189,8 @@ function ShortestPath.CalculateTSPG(oldGraph)
 			v1:AddEdge(edge)
 			v2:AddEdge(edge)
 		end
-		return {
-			Vertices = path,
-			Edges = newEdges,
-		}
+       -- warn(path)
+		return Graph.new(path, newEdges)
 	end
 
 	local oddVertices = findOddDegreeVertices(Verticies)
@@ -201,6 +200,7 @@ function ShortestPath.CalculateTSPG(oldGraph)
 	local hamiltonianPath = makeHamiltonianTour(eulerTour)
 	local finalGraph = createFinalGraph(hamiltonianPath)
 
+    warn(finalGraph.Verticies)
 	return finalGraph
 end
 
@@ -214,8 +214,9 @@ function ShortestPath.CalculateWalkway(Vertices, Edges)
 
 	local Edges = FinalPath.Edges
 	local Verticies = FinalPath.Vertices
+    print(Verticies)
 
-	return { Edges = Edges, Verticies = Verticies } --Vertex IDs are ordered
+    return Graph.new(Verticies, Edges)--Vertex IDs are ordered
 end
 
 function ShortestPath.GetWalkPositionsArrayFromStartPosition(Graph, StartPosition: Vector3): { Vector3 }

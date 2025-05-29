@@ -1,5 +1,5 @@
-local Vertex = require(script.Parent.Objects.Vertex)
-local Edge = require(script.Parent.Objects.Edge)
+local Vertex = require(script.Parent.Parent.Objects.Vertex)
+local Edge = require(script.Parent.Parent.Objects.Edge)
 
 return function (Reference : {Part})
     local Verticies = {}
