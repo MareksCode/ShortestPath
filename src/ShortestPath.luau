@@ -32,7 +32,7 @@ local function removeSmallestEdgeConnectedToT(T, Edges)
     assert(foundE, "No matching edge found! This function should not have been ran") --s
 
     for _, notNeededE in notNeededEs do --remove all edges that are not needed anymore
-        
+        print("removed old")
         table.remove(Edges, table.find(Edges, notNeededE))
         notNeededE:Destroy()
     end
@@ -54,7 +54,7 @@ function ShortestPath.CalculateMST(Verticies, Edges)
         for _, newVertex in e:GetVerticies() do --put the new vertex in the graph T
             if not table.find(T.Verticies, newVertex) then
                 print("inserted new")
-                table.insert(T.Verticies, Vertex)
+                table.insert(T.Verticies, newVertex)
                 table.remove(Verticies, table.find(Verticies, newVertex))
             end
         end
