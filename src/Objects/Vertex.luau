@@ -13,7 +13,7 @@ function Vertex.new(Position: Vector3, Edges: {}?)
     if VISUALIZE then
         self.Trove = Trove.new()
 
-        self.VisualizePart = Trove:Construct(Instance, "Part")
+        self.VisualizePart = self.Trove:Construct(Instance, "Part")
         self.VisualizePart.Size = Vector3.new(1,1,1)
         self.VisualizePart.Color = Color3.fromRGB(100,255,150)
         self.VisualizePart.Anchored = true
