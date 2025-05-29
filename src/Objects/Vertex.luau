@@ -39,7 +39,7 @@ function Vertex:SetId(id)
 			self.textLabel = self.Trove:Construct(Instance, "TextLabel")
 
             self.bbgui.Parent = self.VisualizePart
-            self.bbgui.Size = UDim2.new(2,0,2,0)
+            self.bbgui.Size = UDim2.new(1.2,0,1.2,0)
             self.bbgui.AlwaysOnTop = true
             self.bbgui.Adornee = self.VisualizePart
 
