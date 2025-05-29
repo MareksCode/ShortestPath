@@ -31,6 +31,13 @@ function Edge.new(Vertex1, Vertex2)
 
         self.VisualTrail.Attachment0 = self.VisualAttach1
         self.VisualTrail.Attachment1 = self.VisualAttach2
+        self.VisualTrail.FaceCamera = true
+        self.VisualTrail.Width0 = .1
+        self.VisualTrail.Width1 = .1
+        self.VisualTrail.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0),NumberSequenceKeypoint.new(1, 0)})
+        self.VisualTrail.LightInfluence = 0
+        self.VisualTrail.LightEmission = 1
+        self.VisualTrail.Brightness = 5
 
         self.VisualTrail.Parent = self.VisualPart
         self.VisualAttach1.Parent = self.VisualPart

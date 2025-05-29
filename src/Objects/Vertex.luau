@@ -17,6 +17,7 @@ function Vertex.new(Position: Vector3, Edges: {}?)
         self.VisualizePart = self.Trove:Construct(Instance, "Part")
         self.VisualizePart.Size = Vector3.new(1,1,1)
         self.VisualizePart.Color = Color3.fromRGB(100,255,150)
+        self.VisualizePart.Material = Enum.Material.Neon
         self.VisualizePart.Anchored = true
         self.VisualizePart.CanCollide = false
         self.VisualizePart.CanQuery = false
