@@ -1,0 +1,19 @@
+{
+  "name": "ShortestPath",
+  "tree": {
+    "$className": "DataModel",
+    
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "$ignoreUnknownInstances": true,
+      "$path": "src",
+      "Packages": {
+        "$path": "Packages"
+      },
+      "DevPackages": {
+        "$path": "DevPackages"
+      }
+    }
+  },
+  "servePlaceIds": []
+}

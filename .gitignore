@@ -1,0 +1,17 @@
+# ignore .lock files
+
+*.lock
+!wally.toml
+
+# ignore .txt files
+
+*.txt
+!src/tests/scripts.txt
+
+# ignore packages
+
+/Packages
+/DevPackages
+/sourcemap.json
+*.rbxl
+.vscode/settings.json
