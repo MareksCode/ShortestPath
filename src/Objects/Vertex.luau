@@ -38,11 +38,11 @@ function Vertex:AddEdge(Edge)
 end
 
 function Vertex:RemoveEdge(Edge)
-    local index = table.find(Vertex.Edges, Edge)
+    local index = table.find(self.Edges, Edge)
 
     assert(index, "This edge is not connected to this Vertex")
 
-    table.remove(Vertex.Edges, index)
+    table.remove(self.Edges, index)
 end
 
 function Vertex:Destroy()

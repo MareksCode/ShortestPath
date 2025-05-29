@@ -12,6 +12,8 @@ function Edge.new(Vertex1, Vertex2)
     Vertex1:AddEdge(self)
     Vertex2:AddEdge(self)
 
+    self.Length = (Vertex1:GetPosition() - Vertex2:GetPosition()).Magnitude
+
     if VISUALIZE then
         self.Trove = Trove.new()
 
@@ -46,6 +48,10 @@ function Edge.new(Vertex1, Vertex2)
     end
 
     return self
+end
+
+function Edge:GetVerticies()
+    return self.Verticies
 end
 
 function Edge:Destroy()
