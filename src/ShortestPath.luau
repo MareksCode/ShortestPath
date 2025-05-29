@@ -199,22 +199,19 @@ function ShortestPath.CalculateTSPG(oldGraph)
 	local hamiltonianPath = makeHamiltonianTour(eulerTour)
 	local finalGraph = createFinalGraph(hamiltonianPath)
 
-	warn(finalGraph.Verticies)
 	return finalGraph
 end
 
 function ShortestPath.CalculateWalkway(Vertices, Edges)
 	local MST = ShortestPath.CalculateMST(Vertices, Edges)
 	local FinalPath = ShortestPath.CalculateTSPG(MST)
-	-- warn(FinalPath)
-
+	
 	for _, e in MST.Edges do
 		e:Destroy()
 	end
 
 	local Edges = FinalPath.Edges
 	local Verticies = FinalPath.Verticies
-	-- print(Verticies)
 
 	return Graph.new(Verticies, Edges) --Vertex IDs are ordered
 end
