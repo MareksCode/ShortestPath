@@ -8,8 +8,8 @@ function Edge.new(Vertex1, Vertex2)
 
     self.Verticies = {Vertex1, Vertex2}
 
-    Vertex1.AddEdge(self)
-    Vertex2.AddEdge(self)
+    Vertex1:AddEdge(self)
+    Vertex2:AddEdge(self)
 
     if VISUALIZE then
         self.Trove = Trove.new()
