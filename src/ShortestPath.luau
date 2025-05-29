@@ -181,12 +181,14 @@ function ShortestPath.CalculateTSPG(oldGraph)
 		local newEdges = {}
 		for i = 1, #path -1 do
             local v1 = path[i]
+			v1:Visualize()
             v1:SetId(i)
             local v2 = path[i + 1]
             local edge = Edge.new(v1, v2)
             table.insert(newEdges, edge)
             v1:AddEdge(edge) 
             v2:AddEdge(edge)
+			edge:Visualize()
 		end
 
 		return Graph.new(path, newEdges)

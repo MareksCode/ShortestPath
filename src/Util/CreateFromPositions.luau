@@ -1,5 +1,6 @@
 local Vertex = require(script.Parent.Parent.Objects.Vertex)
 local Edge = require(script.Parent.Parent.Objects.Edge)
+local Graph = require(script.Parent.Parent.Objects.Graph)
 
 return function (Reference : {Vector3})
     local Verticies = {}
@@ -18,6 +19,6 @@ return function (Reference : {Vector3})
             table.insert(Edges, edge)
         end
     end
-
+    
     return Verticies, Edges
 end
