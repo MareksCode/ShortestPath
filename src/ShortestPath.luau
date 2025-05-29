@@ -207,6 +207,8 @@ function ShortestPath.CalculateWalkway(Vertices, Edges)
 
     local Edges = FinalPath.Edges
     local Verticies = FinalPath.Vertices
+
+    return Edges, Verticies --Vertex IDs are ordered
 end
 
 return ShortestPath
